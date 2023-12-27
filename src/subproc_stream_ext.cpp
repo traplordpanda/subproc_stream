@@ -10,10 +10,13 @@ namespace nb = nanobind;
 
 NB_MODULE(subproc_stream_ext, m) {
     using namespace subproc_stream;
-    nb::class_<SubProc>(m, "SubProc")
+    m.doc() = "A simple unidirectional wrapper class around pipes with optional logging"; 
+    nb::class_<SubProc<false>>(m, "SubProc")
         .def(nb::init<const std::string_view>(), nb::rv_policy::take_ownership)
-        .def("get_return_code", &SubProc::get_return_code)
-        .def("exec", &SubProc::exec)
+        .def("exec", &SubProc<false>::exec)
         .def("print_test",
              [] { std::cout << "Hello from subproc_stream_ext.cpp\n"; });
+    nb::class_<SubProc<true>>(m, "SubProcLog")
+        .def(nb::init<std::string_view, std::string_view>(), nb::rv_policy::take_ownership)
+        .def("exec", &SubProc<true>::exec);
 }

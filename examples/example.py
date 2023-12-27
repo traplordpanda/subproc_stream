@@ -1,4 +1,4 @@
-from subproc_stream import SubProc
+from subproc_stream import SubProc, SubProcLog
 
 SubProc("echo hello").exec()
-SubProc("ls -la").exec()
+SubProcLog("ls -la", "example.log").exec()

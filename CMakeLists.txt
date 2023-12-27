@@ -10,7 +10,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 
-add_library(subproc_stream_cpp STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/subproc_stream.cpp)
+add_library(subproc_stream_cpp STATIC ${CMAKE_CURRENT_SOURCE_DIR}/include/subproc_stream.hpp)
+set_target_properties(subproc_stream_cpp PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(example ${CMAKE_CURRENT_LIST_DIR}/examples/example.cpp)
 target_include_directories(example PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
