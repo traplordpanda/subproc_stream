@@ -66,5 +66,3 @@ Any contributions are welcomed!
 - aubuchon-kyle ([kdaub.tf2@gmail.com](mailto:kdaub.tf2@gmail.com))
 
 ---
-
-This revised README includes the specifics of the library's unidirectional nature and its output limitations. Feel free to adjust this template as needed for your project.
