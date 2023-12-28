@@ -48,7 +48,7 @@ Clone the repository and run the build command:
 ```bash
 git clone https://github.com/your-repo/subproc_stream.git
 cd subproc_stream
-python setup.py build
+python -m pip install .
 ```
 
 ## Testing
@@ -66,5 +66,3 @@ Any contributions are welcomed!
 - aubuchon-kyle ([kdaub.tf2@gmail.com](mailto:kdaub.tf2@gmail.com))
 
 ---
-
-This revised README includes the specifics of the library's unidirectional nature and its output limitations. Feel free to adjust this template as needed for your project.
