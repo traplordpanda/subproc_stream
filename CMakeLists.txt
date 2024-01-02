@@ -19,10 +19,10 @@ if (NOT SKBUILD)
   add_executable(example ${CMAKE_CURRENT_LIST_DIR}/examples/example.cpp)
   target_include_directories(example PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
   target_link_libraries(example PUBLIC subproc_stream_cpp)
-
-
   set_common_options_on_targets()
-else()
+endif()
+
+if (SKBUILD)
   if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
       set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
       set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")

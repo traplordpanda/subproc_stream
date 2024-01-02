@@ -16,17 +16,15 @@ class SubProcFile {
     std::ofstream file;
 
   public:
-    explicit SubProcFile(std::string_view path)
-        : fpath(path.data()), file(fpath, std::ios::binary){};
-    explicit SubProcFile(const fs::path& path)
+    explicit SubProcFile(const fs::path &path)
         : fpath(path), file(fpath, std::ios::binary){};
+
     ~SubProcFile() { file.close(); };
     // boolean operator to check if file is open
     explicit operator bool() const { return file.is_open(); }
     void write(std::string_view data) { file << data; };
 };
-template <bool EnableLog>
-class SubProc {
+template <bool EnableLog> class SubProc {
   private:
     std::unique_ptr<FILE, decltype(&pclose)> pipe_;
     std::conditional_t<EnableLog, SubProcFile, std::nullptr_t> file_log;
@@ -51,15 +49,8 @@ class SubProc {
             throw std::runtime_error("Could not open pipe");
         }
     }
-    SubProc(std::string_view command, std::string_view file_log_path)
-        : pipe_(popen(command.data(), "r"), &pclose), file_log(file_log_path) {
-
-        if (!pipe_) {
-            throw std::runtime_error("Could not open pipe");
-        }
-    }
-    
-    SubProc(std::string_view command, fs::path file_log_path)
+    template <typename T>
+    SubProc(std::string_view command, const T &file_log_path)
         : pipe_(popen(command.data(), "r"), &pclose), file_log(file_log_path) {
 
         if (!pipe_) {

@@ -19,8 +19,6 @@ NB_MODULE(subproc_stream_ext, m) {
              [] { std::cout << "Hello from subproc_stream_ext.cpp\n"; });
     nb::class_<SubProc<true>>(m, "SubProcLog")
         .def(nb::init<std::string_view, std::string_view>(), nb::rv_policy::take_ownership)
-        .def("exec", &SubProc<true>::exec);
-    nb::class_<SubProc<true>>(m, "SubProcLog")
         .def(nb::init<std::string_view, std::filesystem::path>(), nb::rv_policy::take_ownership)
         .def("exec", &SubProc<true>::exec);
 }

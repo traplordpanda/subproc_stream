@@ -5,3 +5,4 @@ p = Path(__file__).parent / "example.log"
 
 SubProc("echo hello").exec()
 SubProcLog("ls -la", p).exec()
+SubProcLog("ls -la", str(p)).exec()
