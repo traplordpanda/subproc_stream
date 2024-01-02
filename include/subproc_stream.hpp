@@ -18,6 +18,8 @@ class SubProcFile {
   public:
     explicit SubProcFile(std::string_view path)
         : fpath(path.data()), file(fpath, std::ios::binary){};
+    explicit SubProcFile(const fs::path& path)
+        : fpath(path), file(fpath, std::ios::binary){};
     ~SubProcFile() { file.close(); };
     // boolean operator to check if file is open
     explicit operator bool() const { return file.is_open(); }
@@ -40,15 +42,6 @@ class SubProc {
         }
     }
 
-    auto get_cwd() const -> fs::path {
-        constexpr auto max_path_size = 512;
-        std::array<char, max_path_size> cwd;
-        if (getcwd(cwd.data(), cwd.size()) == nullptr) {
-            return fs::path();
-        }
-        return fs::path(cwd.data());
-    }
-
     int close_pipe() { return pclose(pipe_.release()); }
 
   public:
@@ -66,6 +59,14 @@ class SubProc {
         }
     }
     
+    SubProc(std::string_view command, fs::path file_log_path)
+        : pipe_(popen(command.data(), "r"), &pclose), file_log(file_log_path) {
+
+        if (!pipe_) {
+            throw std::runtime_error("Could not open pipe");
+        }
+    }
+
     auto exec() -> void {
         std::array<char, 128> buffer;
         std::string result;

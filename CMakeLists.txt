@@ -13,17 +13,20 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(subproc_stream_cpp STATIC ${CMAKE_CURRENT_SOURCE_DIR}/include/subproc_stream.hpp)
 set_target_properties(subproc_stream_cpp PROPERTIES LINKER_LANGUAGE CXX)
 
-add_executable(example ${CMAKE_CURRENT_LIST_DIR}/examples/example.cpp)
-target_include_directories(example PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
-target_link_libraries(example PUBLIC subproc_stream_cpp)
-
 set_common_options_on_targets()
 
-# if (SKBUILD)
-if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
+if (NOT SKBUILD)
+  add_executable(example ${CMAKE_CURRENT_LIST_DIR}/examples/example.cpp)
+  target_include_directories(example PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
+  target_link_libraries(example PUBLIC subproc_stream_cpp)
+
+
+  set_common_options_on_targets()
+else()
+  if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+      set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+      set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+  endif()
 
   find_package(Python
     REQUIRED COMPONENTS Interpreter Development.Module
@@ -43,7 +46,7 @@ endif()
   target_link_libraries(subproc_stream_ext PUBLIC ${CMAKE_DL_LIBS})
   install(TARGETS subproc_stream_ext LIBRARY DESTINATION subproc_stream)
 
-# endif()
+endif()
 
 
 # enable_testing()

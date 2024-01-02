@@ -1,1 +1,1 @@
-from .subproc_stream_ext import * 
+from .subproc_stream_ext import SubProc, SubProcLog
