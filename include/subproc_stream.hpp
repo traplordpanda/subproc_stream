@@ -82,13 +82,10 @@ template <bool EnableLog> class SubProcNoBlock {
     int fd;
     int close_pipe() { return pclose(pipe_.release()); }
     auto set_non_blocking() const -> void {
-        int flags = fcntl(fd, F_GETFL, O_NONBLOCK);
-        if (flags == -1) {
-            throw std::runtime_error("Failed to get file descriptor flags");
-        }
-        if (fcntl(fileno(pipe_.get()), F_SETFL, flags | O_NONBLOCK) == -1) {
+      int retval = fcntl( fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+      if (retval == -1) {
             throw std::runtime_error("Failed to set non-blocking mode");
-        }
+      }
     }
 
   public:
@@ -142,6 +139,7 @@ template <bool EnableLog> class SubProcNoBlock {
                 file_log.write(result);
             }
             std::cout << result;
+
             return State::RUNNING;
         } else {
             executed = true;
@@ -149,6 +147,10 @@ template <bool EnableLog> class SubProcNoBlock {
         }
     }
 };
+
+class SubProcNoBlockManager;
+template<typename T>
+concept IsNotSubProcNoBlockManager = !std::is_same_v<std::decay_t<T>, SubProcNoBlockManager>;
 
 class SubProcNoBlockManager {
   private:
@@ -160,9 +162,7 @@ class SubProcNoBlockManager {
 
   public:
     SubProcNoBlockManager() = default;
-    template <typename... Args,
-              typename = std::enable_if_t<!std::disjunction_v<
-                  std::is_same<std::decay_t<Args>, SubProcNoBlockManager>...>>>
+    template <IsNotSubProcNoBlockManager... Args>
     explicit SubProcNoBlockManager(Args... args) {
         (add_proc(args), ...);
     }

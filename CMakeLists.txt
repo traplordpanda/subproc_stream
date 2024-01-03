@@ -20,6 +20,7 @@ if (NOT SKBUILD)
   target_include_directories(example PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
   target_link_libraries(example PUBLIC subproc_stream_cpp)
   set_common_options_on_targets()
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/examples/test_async.py ${CMAKE_CURRENT_BINARY_DIR}/test_async.py COPYONLY)
 endif()
 
 if (SKBUILD)

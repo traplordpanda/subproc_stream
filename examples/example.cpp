@@ -11,16 +11,21 @@ namespace sps = subproc_stream;
 namespace fs = std::filesystem;
 
 void test_subproc_file() {
-    auto f = sps::SubProcFile("example0.log", true);
+    auto append = true; 
+    auto f = sps::SubProcFile("example0.log", append);
     f.write("Hello World\n");
-    auto f2 = sps::SubProcFile("example2.log", true);
+    auto f2 = sps::SubProcFile("example2.log", append);
     f2.write("Hello World\n");
 }
 
 void non_blocking_test() {
-    sps::SubProcNoBlockManager manager(std::make_pair("ls -a", "example1.log"), std::make_pair("ls -a", "example2.log"));
+    auto first = std::make_pair("./test_async.py", "example1.log");
+    auto second = std::make_pair("./test_async.py", "example2.log");
+    auto third = std::make_pair("./test_async.py", "example3.log"); 
+    sps::SubProcNoBlockManager manager(first, second, third);
     manager.exec();    
 }
+
 int main(int argc, char **argv) {
     auto args = std::vector<std::string_view>(argv, argv + argc);
 
@@ -39,6 +44,6 @@ int main(int argc, char **argv) {
     std::cout << "Command Finished: "
               << "ls -a\n";
     std::cout << "Running command nonblocking\n";
-    test_subproc_file();
     non_blocking_test();
+    test_subproc_file();
 }
