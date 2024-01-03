@@ -48,7 +48,9 @@ Clone the repository and run the build command:
 ```bash
 git clone https://github.com/your-repo/subproc_stream.git
 cd subproc_stream
+git submodule update --init --recursive
 python -m pip install .
+python examples/example.py
 ```
 
 ## Testing
