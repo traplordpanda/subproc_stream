@@ -4,12 +4,24 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <tuple>
 
 #include "subproc_stream.hpp"
+namespace sps = subproc_stream;
+namespace fs = std::filesystem;
 
+void test_subproc_file() {
+    auto f = sps::SubProcFile("example0.log", true);
+    f.write("Hello World\n");
+    auto f2 = sps::SubProcFile("example2.log", true);
+    f2.write("Hello World\n");
+}
+
+void non_blocking_test() {
+    sps::SubProcNoBlockManager manager(std::make_pair("ls -a", "example1.log"), std::make_pair("ls -a", "example2.log"));
+    manager.exec();    
+}
 int main(int argc, char **argv) {
-    namespace sps = subproc_stream;
-    namespace fs = std::filesystem;
     auto args = std::vector<std::string_view>(argv, argv + argc);
 
     std::cout << "Running command: "
@@ -26,4 +38,7 @@ int main(int argc, char **argv) {
     c.exec(); 
     std::cout << "Command Finished: "
               << "ls -a\n";
+    std::cout << "Running command nonblocking\n";
+    test_subproc_file();
+    non_blocking_test();
 }
