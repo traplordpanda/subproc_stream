@@ -8,6 +8,7 @@
 #include <memory>
 #include <string_view>
 #include <tuple>
+#include <string_view>
 #include <unistd.h>
 #include <vector>
 
@@ -37,6 +38,7 @@ template <bool EnableLog> class SubProc {
     bool executed = false;
     int fd;
     int close_pipe() { return pclose(pipe_.release()); }
+    std::array<char, 256> buffer;
 
   public:
     explicit SubProc(std::string_view command)
@@ -60,11 +62,9 @@ template <bool EnableLog> class SubProc {
     }
 
     auto exec() -> void {
-        std::array<char, 128> buffer;
-        std::string result;
 
-        while (fgets(buffer.data(), buffer.size(), pipe_.get()) != nullptr) {
-            result = buffer.data();
+        while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe_.get()) != nullptr) {
+            std::string_view result = buffer.data();
             if constexpr (EnableLog) {
                 file_log.write(buffer.data());
             }
