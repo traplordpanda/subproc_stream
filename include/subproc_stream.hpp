@@ -25,9 +25,22 @@ class SubProcFile {
           file(fpath, append ? std::ios::app : std::ios::binary){};
 
     ~SubProcFile() { file.close(); };
-    // boolean operator to check if file is open
     SubProcFile(SubProcFile &&other) noexcept
         : fpath(std::move(other.fpath)), file(std::move(other.file)) {}
+    // Move assignment operator
+    SubProcFile &operator=(SubProcFile &&other) noexcept {
+        if (this != &other) {
+            fpath = std::move(other.fpath);
+            file = std::move(other.file);
+        }
+        return *this;
+    }
+    // Delete the copy constructor and copy assignment operator
+    // std::ofstream is not copyable
+    SubProcFile(const SubProcFile &) = delete;
+    SubProcFile &operator=(const SubProcFile &) = delete;
+
+    // boolean operator to check if file is open
     explicit operator bool() const { return file.is_open(); }
     void write(std::string_view data) { file << data; };
 };
