@@ -163,7 +163,9 @@ template <bool EnableLog> class SubProcNoBlock {
 
 class SubProcNoBlockManager;
 template<typename T>
-concept IsNotSubProcNoBlockManager = !std::is_same_v<std::decay_t<T>, SubProcNoBlockManager>;
+struct IsNotSubProcNoBlockManager {
+static constexpr bool value = !std::is_same_v<std::decay_t<T>, SubProcNoBlockManager>;
+};
 
 class SubProcNoBlockManager {
   private:
@@ -175,7 +177,7 @@ class SubProcNoBlockManager {
 
   public:
     SubProcNoBlockManager() = default;
-    template <IsNotSubProcNoBlockManager... Args>
+    template <typename... Args, typename = std::enable_if_t<(IsNotSubProcNoBlockManager<Args>::value && ...)>>
     explicit SubProcNoBlockManager(Args... args) {
         (add_proc(args), ...);
     }
